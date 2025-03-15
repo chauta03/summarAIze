@@ -1,0 +1,15 @@
+# macOS
+.DS_Store
+
+# Python
+
+/backend/env/
+__pycache__/
+
+
+# VS Code
+.vscode/
+
+# Backend
+/backend/.env
+/backend/*.json
