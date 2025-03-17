@@ -1,7 +1,5 @@
 # SummarAIze Backend
 
-This is the backend service for SummarAIze, a tool that provides meeting summaries and Google Meet integration.
-
 ## Requirements
 
 - Python
@@ -32,7 +30,7 @@ This is the backend service for SummarAIze, a tool that provides meeting summari
 
 5. Manually create a database named summaraize in your postgres database server
 
-6. Run database migration
+6. Run database migrations
    ```sh
       alembic upgrade head
    ```
