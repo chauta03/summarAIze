@@ -5,6 +5,7 @@ This is the backend service for SummarAIze, a tool that provides meeting summari
 ## Requirements
 
 - Python
+- Postgresql
 
 ## Setup
 
@@ -28,6 +29,13 @@ This is the backend service for SummarAIze, a tool that provides meeting summari
    ```
 
 4. Add your Google API credentials to `credentials.json`.
+
+5. Manually create a database named summaraize in your postgres database server
+
+6. Run database migration
+   ```sh
+      alembic upgrade head
+   ```
 
 ## Running the Application
 
