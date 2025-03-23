@@ -4,7 +4,6 @@ from fastapi import HTTPException
 from passlib.context import CryptContext
 from db.models import User
 from schemas.users import UserResponse
-from db.models import User as UserDbCreate
 
 # Password hashing utility
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -20,7 +19,7 @@ async def sign_up(db_session: AsyncSession, first_name: str, last_name: str, ema
     hashed_password = pwd_context.hash(password)
 
     # Create a new user
-    new_user = UserDbCreate(
+    new_user = User(
         first_name=first_name,
         last_name=last_name,
         email=email,
