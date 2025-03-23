@@ -1,7 +1,4 @@
-import datetime
-
-from sqlalchemy import (JSON, Boolean, Column, Date, DateTime, Float,
-                        ForeignKey, Integer, String, Text)
+from sqlalchemy import (Column, ForeignKey, Integer, String)
 from sqlalchemy.orm import relationship
 
 from db.db_manager import Base
