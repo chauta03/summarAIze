@@ -1,0 +1,10 @@
+.App {
+  text-align: center;
+  background: var(--primary-color);
+  height: 100vh;
+}
+
+:root {
+  --primary-color: #232323;  /* Black-ish */
+  --red: #B43535; /* Red */
+}
