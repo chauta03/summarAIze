@@ -10,7 +10,6 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision: str = '3b29fb67f3ff'
 down_revision: Union[str, None] = None
@@ -39,3 +38,11 @@ def upgrade() -> None:
         sa.Column('meeting_id', sa.String(length=150), nullable=False),
         sa.Column('meeting_url', sa.String(length=250), nullable=False)
     )
+
+def downgrade() -> None:
+    """Downgrade schema."""
+    # Drop meetings table
+    op.drop_table('meetings')
+
+    # Drop users table
+    op.drop_table('users')
