@@ -2,8 +2,8 @@ from db.models import Meeting as MeetingDBModel
 from schemas.meetings import Meeting
 from fastapi import HTTPException
 from services.meetings.google_meet import GoogleMeetServices
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 google_meet_services = GoogleMeetServices()
 
@@ -25,3 +25,11 @@ async def create_google_meeting(db_session: AsyncSession, user_id: int) -> Meeti
     
     # Convert the SQLAlchemy object to a Pydantic model and return it
     return Meeting.model_validate(meeting)
+
+async def list_user_meetings(db_session: AsyncSession, user_id: int) -> list[Meeting]:
+    # Query the database for meetings belonging to the user
+    result = await db_session.execute(select(MeetingDBModel).where(MeetingDBModel.user_id == user_id))
+    meetings = result.scalars().all()
+
+    # Convert the SQLAlchemy objects to Pydantic models
+    return [Meeting.model_validate(meeting) for meeting in meetings]

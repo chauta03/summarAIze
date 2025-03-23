@@ -22,14 +22,3 @@ async def get_meeting_summary(meeting_id: str):
     Alex: Alright, then. Thanks, everyone! Let’s touch base again next week."""
     summary = agent.generateSumary(sample_script)
     return {"meeting_id": meeting_id, "summary": summary}
-
-@router.post(
-    "/create_google_meeting",
-    response_model=Meeting
-    )
-async def create_google_meeting(
-    user_id: int,
-    db_session: DBSessionDep,
-):
-    res  = await meetings.create_google_meeting(db_session, user_id)
-    return res
