@@ -1,13 +1,14 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from services.ai import geminiAgent
-from services.meetings import google_meet
+from crud import meetings
+from db.db_manager import DBSessionDep
+from schemas.meetings import Meeting
 
 router = APIRouter()
-google_meet_services = google_meet.GoogleMeetServices()
 agent = geminiAgent.GeminiAgent()
 
 @router.get("/summary/{meeting_id}")
-def get_meeting_summary(meeting_id: str):
+async def get_meeting_summary(meeting_id: str):
     sample_script = """
     Alex: Good morning, everyone. Let’s keep this short. Jamie, can you update us on the development progress?
     Jamie: Sure! The new login feature is almost complete. I just need to run a few more tests, and it should be ready for deployment by Friday.
@@ -21,8 +22,3 @@ def get_meeting_summary(meeting_id: str):
     Alex: Alright, then. Thanks, everyone! Let’s touch base again next week."""
     summary = agent.generateSumary(sample_script)
     return {"meeting_id": meeting_id, "summary": summary}
-
-@router.get("/create_google_meeting")
-def create_zoom_meeting():
-    res  = google_meet_services.create_google_meet()
-    return res
