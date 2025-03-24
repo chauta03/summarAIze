@@ -1,14 +1,13 @@
 import React from 'react';
 import './LoginPage.css';
-import myImage from '/Users/janhiong/Downloads/Summarizer/summarAIze/frontend/src/assets/LogIn.png';
 import googleLogo from '../assets/google-logo.png';
 import { Link } from 'react-router-dom';
-
+import LoginImg from '../assets/LogIn.png';
 
 
 const Login = () => {
   const backgroundStyle = {
-    backgroundImage: `url(${myImage})`,
+    backgroundImage: `url(${LoginImg})`,
     backgroundSize:'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',

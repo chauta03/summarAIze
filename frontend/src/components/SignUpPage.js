@@ -1,11 +1,10 @@
 import React from 'react';
 import './SignUpPage.css';
-import myImage from '/Users/janhiong/Downloads/Summarizer/summarAIze/frontend/src/assets/SignUp.png';
-
+import SignUpImg from '../assets/SignUp.png';
 
 const Signup = () => {
   const backgroundStyle = {
-    backgroundImage: `url(${myImage})`,
+    backgroundImage: `url(${SignUpImg})`,
     backgroundSize:'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
