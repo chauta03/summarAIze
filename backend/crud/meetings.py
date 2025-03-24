@@ -5,11 +5,10 @@ from services.meetings.google_meet import GoogleMeetServices
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-google_meet_services = GoogleMeetServices()
-
 async def create_google_meeting(db_session: AsyncSession, user_id: int) -> Meeting:
     # Call the Google Meet service to create a meeting
-    meeting_info = google_meet_services.create_google_meet()
+    google_meet_services = GoogleMeetServices(db_session=db_session, user_id=user_id)
+    meeting_info = await google_meet_services.create_google_meet()
     if not meeting_info:
         raise HTTPException(status_code=500, detail="Failed to create Google meeting")
     

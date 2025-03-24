@@ -1,15 +1,14 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Response
 from schemas.users import UserCreate, UserLogin, UserResponse
-from crud.users import sign_up, sign_in
+from crud.users import sign_up, sign_in, logout
 from db.db_manager import DBSessionDep
 
 router = APIRouter()
 
 @router.post("/sign_up", response_model=UserResponse)
 async def user_sign_up(
-    user: UserCreate,  # Extracts user data from the request body
-    db_session: DBSessionDep  # Injects the database session
+    user: UserCreate,
+    db_session: DBSessionDep
 ):
     """
     API endpoint for user sign-up.
@@ -24,8 +23,9 @@ async def user_sign_up(
 
 @router.post("/sign_in", response_model=UserResponse)
 async def user_sign_in(
-    credentials: UserLogin,  # Extracts email and password from the request body
-    db_session: DBSessionDep  # Injects the database session
+    credentials: UserLogin,
+    db_session: DBSessionDep,
+    response: Response
 ):
     """
     API endpoint for user sign-in.
@@ -33,5 +33,10 @@ async def user_sign_in(
     return await sign_in(
         db_session=db_session,
         email=credentials.email,
-        password=credentials.password
+        password=credentials.password,
+        response=response
     )
+    
+@router.post("/logout")
+async def user_log_out(response: Response):
+    return await logout(response)
