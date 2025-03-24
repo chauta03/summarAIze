@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Kantumruy&display=swap');
+/* Remove autofill highlight in Chrome/Edge/Safari */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  /* Force the background color to match your input field (e.g., #2a2a2a) */
+  box-shadow: 0 0 0 30px  rgba(49, 49, 49, 1) inset !important;
+  -webkit-box-shadow: 0 0 0 30px  rgba(49, 49, 49, 1) inset !important;
+
+  /* Ensure text remains visible if your input text is white */
+  -webkit-text-fill-color: #f5f5f5 !important;
+}
+
+
+.signup-box {
+  width: 520px;
+  height: 390px;
+  background-color: #2a2a2a;
+  border-radius: 45px;
+  box-shadow: 0 4px 4px rgba(0,0,0,0.25),
+  inset 0 0 50px rgba(255, 255, 255, 0.15);
+  padding: 80px 30px;
+  text-align: center;
+  color: #f5f5f5;
+  font-family: 'Kantumruy', sans-serif;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  top: 170px;
+  position: absolute;
+  left: 220px;
+}
+
+
+.signup-box h2 {
+  font-family: 'Kantumruy', sans-serif;
+  font-size: 50px;
+  margin: 0 0 20px;
+  font-weight: 700;
+  letter-spacing: 0px;
+  text-transform: lowercase;
+  line-height:36px;
+  color: rgba(255, 255, 255, 1);
+  margin-top: -20px;
+}
+
+.input-group {
+  width: 294px;
+  height: 54px;
+  background-color: rgba(49, 49, 49, 1) ;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto 40px;
+  margin-top: 7%;
+}
+
+.input-group input {
+  font: Kantumruy;
+  font-size: 15px;
+  width: 200px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: #f5f5f5;
+  margin-left: 8%;
+}
+
+input:focus {
+  outline: none;
+}
+
+.signup-button {
+  width: 108px;
+  height: 36px;
+  padding: 5px;
+  background-color: rgba(49, 49, 49, 1);
+  color: rgba(180, 53, 53, 1);
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 18px;
+  text-transform: lowercase;
+  margin-top: -15px;
+}
+
