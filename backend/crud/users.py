@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from fastapi import HTTPException
+from fastapi import HTTPException, Response
 from passlib.context import CryptContext
 from db.models import User
 from schemas.users import UserResponse
@@ -31,7 +31,7 @@ async def sign_up(db_session: AsyncSession, first_name: str, last_name: str, ema
 
     return UserResponse.model_validate(new_user)
 
-async def sign_in(db_session: AsyncSession, email: str, password: str) -> User:
+async def sign_in(db_session: AsyncSession, email: str, password: str, response: Response) -> UserResponse:
     # Check if the user exists
     result = await db_session.execute(select(User).where(User.email == email))
     user = result.scalars().first()
@@ -42,4 +42,13 @@ async def sign_in(db_session: AsyncSession, email: str, password: str) -> User:
     if not pwd_context.verify(password, user.password):
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
+    # Save user information in a session (e.g., using cookies)
+    response.set_cookie(key="user_id", value=user.id, httponly=True)
+
     return UserResponse.model_validate(user)
+
+async def logout(response: Response):
+
+    # Delete the user_id cookie to log the user out
+    response.delete_cookie(key="user_id")
+    return {"message": "User logged out successfully"}
