@@ -15,7 +15,7 @@ input:-webkit-autofill:active {
 
 .signup-box {
   width: 520px;
-  height: 390px;
+  height: 460px;
   background-color: #2a2a2a;
   border-radius: 45px;
   box-shadow: 0 4px 4px rgba(0,0,0,0.25),
@@ -27,7 +27,7 @@ input:-webkit-autofill:active {
   align-items: center;
   display: flex;
   flex-direction: column;
-  top: 170px;
+  top: 100px;
   position: absolute;
   left: 220px;
 }
