@@ -1,6 +1,3 @@
-import sys
-import audioop
-sys.modules['pyaudioop'] = audioop
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
