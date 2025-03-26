@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from services.ai import geminiAgent
 from crud import meetings
 from db.db_manager import DBSessionDep
 from schemas.meetings import Meeting
+import os
+import azure.cognitiveservices.speech as speechsdk
+import subprocess
+import uuid
 
 router = APIRouter()
 agent = geminiAgent.GeminiAgent()
