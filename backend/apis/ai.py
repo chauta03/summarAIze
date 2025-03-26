@@ -26,8 +26,8 @@ async def get_meeting_summary(meeting_id: str):
     return {"meeting_id": meeting_id, "summary": summary}
 
 
-@router.post("/transcription")
-async def get_transcription(file: UploadFile = File(...)):
+@router.post("/transcription-and-summary")
+async def get_transcription_and_summary(file: UploadFile = File(...)):
     """Accepts a video file, extracts audio, transcribes it, and returns the transcription."""
     azure_key = os.getenv("AZURE_SPEECH_KEY")
     azure_region = os.getenv("AZURE_REGION")
@@ -35,7 +35,7 @@ async def get_transcription(file: UploadFile = File(...)):
     if not azure_key or not azure_region:
         raise HTTPException(status_code=500, detail="Azure credentials not set in environment variables")
     
-    transcription = await transcription_agent.transcribe_video(file)
-
-    return {"transcription": transcription}
+    transcription_info = await transcription_agent.transcribe_video(file)
+    transcription_info["summary"] = agent.generateSumary(transcription_info["transcription"])
+    return transcription_info
 

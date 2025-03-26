@@ -221,9 +221,9 @@ class GoogleMeetServices:
             print("=====")
             print("transcript: ", record_transcription)
             # Generate the summary
-            summary = summaryAgent.generateSumary(record_transcription)
+            record_transcription["summary"] = summaryAgent.generateSumary(record_transcription["transcription"])
 
-            return summary
+            return record_transcription
         finally:
             # Clean up the temporary downloaded file
             if os.path.exists(record_uri):

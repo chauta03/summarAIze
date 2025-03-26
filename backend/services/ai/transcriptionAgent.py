@@ -16,15 +16,36 @@ class TranscriptionAgent:
         Initialize the Transcript with the given text.
         """
         self.client = speechsdk.SpeechConfig(subscription=os.getenv("AZURE_SPEECH_KEY"), region=os.getenv("AZURE_REGION"))
+        
+    def _get_media_duration(self, file_path: str) -> float:
+        """
+        Gets the duration of an audio or video file in seconds.
+        """
+        command = [
+            "ffprobe",
+            "-v", "error",
+            "-show_entries", "format=duration",
+            "-of", "default=noprint_wrappers=1:nokey=1",
+            file_path
+        ]
+        try:
+            result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+            return float(result.stdout.strip())
+        except subprocess.CalledProcessError as e:
+            raise HTTPException(status_code=500, detail=f"Failed to get media duration: {e.stderr.strip()}")
     
     def extract_audio(self, video_path: str) -> str:
         """Extracts audio from video and saves it as a .wav file."""
         audio_path = f"/tmp/{uuid.uuid4()}.wav"  # Generate a unique filename
 
         command = ["ffmpeg", "-i", video_path, "-q:a", "0", "-map", "a", audio_path, "-y"]
+        video_duration = int(self._get_media_duration(video_path))
         try:
             subprocess.run(command, check=True)
-            return audio_path
+            return {
+                "path": audio_path,
+                "duration": video_duration,
+                }
         except subprocess.CalledProcessError:
             raise HTTPException(status_code=500, detail="Failed to extract audio from video")
 
@@ -61,15 +82,18 @@ class TranscriptionAgent:
 
         try:
             # Extract audio
-            audio_path = self.extract_audio(video_path)
+            audio_info = self.extract_audio(video_path)
 
             # Transcribe audio
-            transcription = self.transcribe_audio(audio_path)
+            transcription = self.transcribe_audio(audio_info["path"])
 
-            return transcription
+            return {
+                "transcription": transcription,
+                "duration": audio_info["duration"]
+                }
         finally:
             # Clean up files
             if os.path.exists(video_path):
                 os.remove(video_path)
-            if os.path.exists(audio_path):
-                os.remove(audio_path)
+            if os.path.exists(audio_info["path"]):
+                os.remove(audio_info["path"])
