@@ -2,6 +2,7 @@ import azure.cognitiveservices.speech as speechsdk
 import os
 import subprocess
 import uuid
+import requests
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 
 
@@ -44,22 +45,31 @@ class TranscriptionAgent:
             return f"Speech recognition canceled: {result.cancellation_details.reason}"
         
 
-    async def transcribe_video(self, file: UploadFile = File(...)) -> str:
-        """Accepts a video file, extracts audio, transcribes it, and returns the transcription."""
-        video_path = f"/tmp/{file.filename}"
-        
-        # Save uploaded file
-        with open(video_path, "wb") as buffer:
-            buffer.write(await file.read())
+    async def transcribe_video(self, file: UploadFile = None, video_path: str = None) -> str:
+        """
+        Accepts a video file or a video URI, extracts audio, transcribes it, and returns the transcription.
+        """
+        if not file and not video_path:
+            raise HTTPException(status_code=400, detail="Either a file or a video URI must be provided.")
 
-        # Extract audio
-        audio_path = self.extract_audio(video_path)
+        # Determine the video source
+        if file:
+            # Save the uploaded file
+            video_path = f"/tmp/{uuid.uuid4()}_{file.filename}"
+            with open(video_path, "wb") as buffer:
+                buffer.write(await file.read())
 
-        # Transcribe audio
-        transcription = self.transcribe_audio(audio_path)
+        try:
+            # Extract audio
+            audio_path = self.extract_audio(video_path)
 
-        # Clean up files
-        os.remove(video_path)
-        os.remove(audio_path)
+            # Transcribe audio
+            transcription = self.transcribe_audio(audio_path)
 
-        return transcription
+            return transcription
+        finally:
+            # Clean up files
+            if os.path.exists(video_path):
+                os.remove(video_path)
+            if os.path.exists(audio_path):
+                os.remove(audio_path)
