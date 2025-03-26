@@ -2,6 +2,7 @@ alembic==1.15.1
 annotated-types==0.7.0
 anyio==4.8.0
 asyncpg==0.30.0
+bcrypt==4.3.0
 blinker==1.7.0
 cachetools==5.5.2
 certifi==2025.1.31
@@ -48,6 +49,7 @@ numpy==2.1.2
 oauthlib==3.2.2
 packaging==24.1
 pandas==2.2.3
+passlib==1.7.4
 pillow==11.0.0
 platformdirs==4.3.6
 proto-plus==1.26.1
@@ -83,7 +85,6 @@ typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.3.0
 uvicorn==0.34.0
-uvloop==0.21.0
 virtualenv==20.29.3
 watchfiles==1.0.4
 websockets==14.2

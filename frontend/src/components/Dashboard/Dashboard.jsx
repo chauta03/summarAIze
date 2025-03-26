@@ -9,6 +9,7 @@ function Dashboard() {
   const [recordings, setRecordings] = useState(fakeRecordings);
   const [showRenameBox, setShowRenameBox] = useState(false);
   const [renameInput, setRenameInput] = useState('');
+  const [pendingRecordingData, setPendingRecordingData] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
   const [showFullTranscript, setShowFullTranscript] = useState(false);
 
@@ -23,16 +24,35 @@ function Dashboard() {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
-      handleUpload();
+      handleUpload(file);
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (file) => {
     setUploadStatus('');
     setIsUploading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('http://localhost:8000/ai/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const data = await response.json();
+
+      setPendingRecordingData({
+        transcript: data.transcript,
+        summary: data.summary,
+        duration: data.duration,
+      });
+
       setRenameInput('');
       setShowRenameBox(true);
     } catch (error) {
@@ -49,32 +69,23 @@ function Dashboard() {
       weekday: 'short',
       day: 'numeric',
       month: 'long',
-      year: 'numeric'
+      year: 'numeric',
     });
 
     const newRecording = {
       id: Date.now(),
       title: nameToUse,
       dateUploaded: formattedDate,
-      duration: '20:12 min', // mock duration
-      keyPoints: {
-        frontend: 'ReactJS',
-        backend: '......',
-      },
-      transcript: `1. Idea:
-AI-Powered Meeting Summarizer & Productivity Assistant
-Main feature: Meeting summarize
-
-2. Tech stack:
-• Frontend: React
-• Azure AI:
-• Transcription: Azure AI Speech-to-Text to transcribe audio`
+      duration: pendingRecordingData?.duration || 'Unknown',
+      transcript: pendingRecordingData?.transcript || '',
+      summary: pendingRecordingData?.summary || '',
     };
 
     setRecordings(prev => [newRecording, ...prev]);
     setShowRenameBox(false);
     setRenameInput('');
     setSelectedFile(null);
+    setPendingRecordingData(null);
     setUploadStatus('Upload successful!');
   };
 
@@ -90,7 +101,7 @@ Main feature: Meeting summarize
       setShowFullTranscript(false);
     } else {
       setExpandedId(id);
-      setShowFullTranscript(false); // reset collapsed when switching
+      setShowFullTranscript(false);
     }
   };
 
@@ -153,36 +164,33 @@ Main feature: Meeting summarize
             <div className="recording-title">{rec.title}</div>
             <div className="recording-date">{rec.dateUploaded}</div>
             <div className="recording-duration">{rec.duration}</div>
-            <div className="summarized-key">{rec.transcript}</div>
+            <div className="summarized-key">{rec.summary || rec.transcript}</div>
             <button onClick={() => toggleExpand(rec.id)} className="view-transcript-btn">
               view full transcript
             </button>
 
             {expandedId === rec.id && (
-                <div className="transcript-wrapper">
-                    <div className="outer-shadow" />
-                    
-                    <div className="transcript-card">
-                    <div className="side-label left">full transcript</div>
+              <div className="transcript-wrapper">
+                <div className="outer-shadow" />
 
-                    <div className={`transcript-content ${showFullTranscript ? 'expanded' : ''}`}>
-                        <p>{rec.transcript}</p>
-                    </div>
+                <div className="transcript-card">
+                  <div className="side-label left">full transcript</div>
 
-                    <div
-                        className="watch-more"
-                        onClick={() => setShowFullTranscript(prev => !prev)}
-                    >
-                        {showFullTranscript ? 'Show less' : 'Watch more...'}
-                    </div>
+                  <div className={`transcript-content ${showFullTranscript ? 'expanded' : ''}`}>
+                    <p>{rec.transcript}</p>
+                  </div>
 
-                    <div className="side-label right">full transcript</div>
-                    </div>
+                  <div
+                    className="watch-more"
+                    onClick={() => setShowFullTranscript(prev => !prev)}
+                  >
+                    {showFullTranscript ? 'Show less' : 'Watch more...'}
+                  </div>
+
+                  <div className="side-label right">full transcript</div>
                 </div>
-                )}
-
-
-
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -1,7 +1,4 @@
-import datetime
-
-from sqlalchemy import (JSON, Boolean, Column, Date, DateTime, Float,
-                        ForeignKey, Integer, String, Text)
+from sqlalchemy import (Column, ForeignKey, Integer, String, DateTime)
 from sqlalchemy.orm import relationship
 
 from db.db_manager import Base
@@ -17,6 +14,7 @@ class User(Base):
     password = Column(String(250), nullable=False)
 
     meetings = relationship("Meeting", back_populates="user")
+    app_integrations = relationship("AppIntegration", back_populates="user")
 
 
 class Meeting(Base):
@@ -30,3 +28,16 @@ class Meeting(Base):
     meeting_url = Column(String(250), nullable=False)
 
     user = relationship("User", back_populates="meetings")
+
+class AppIntegration(Base):
+    """Keeps track of app integrations for users"""
+
+    __tablename__ = "app_integrations"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    app_name = Column(String(150), nullable=False)
+    token = Column(String(500), nullable=False)
+    refresh_token = Column(String(500), nullable=True)
+    expire = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="app_integrations")
