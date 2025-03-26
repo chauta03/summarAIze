@@ -4,6 +4,7 @@
 }
 
 :root {
+  background-color: var(--primary-color);
   --primary-color: #232323;
   --red: #B43535;
 }
