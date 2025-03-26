@@ -1,9 +1,14 @@
+import sys
+import audioop
+sys.modules['pyaudioop'] = audioop
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware  # ⬅️ Add this
 from apis import ai, users, meetings
 from db.db_manager import sessionmanager
 from db.models import *
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

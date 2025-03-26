@@ -42,13 +42,15 @@ function Dashboard() {
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        throw new Error('upload failed');
       }
 
       const data = await response.json();
 
+      // Now we also expect a translation field from the backend.
       setPendingRecordingData({
         transcript: data.transcript,
+        translation: data.translation, // new field from your backend
         summary: data.summary,
         duration: data.duration,
       });
@@ -78,6 +80,7 @@ function Dashboard() {
       dateUploaded: formattedDate,
       duration: pendingRecordingData?.duration || 'Unknown',
       transcript: pendingRecordingData?.transcript || '',
+      translation: pendingRecordingData?.translation || '',
       summary: pendingRecordingData?.summary || '',
     };
 
@@ -152,10 +155,10 @@ function Dashboard() {
       <div className="recordings-table">
         <div className="table-header">
           <span></span>
-          <span>title</span>
-          <span>date</span>
-          <span>duration</span>
-          <span>summarized key points</span>
+          <span>Title</span>
+          <span>Date</span>
+          <span>Duration</span>
+          <span>Summarized Key Points</span>
         </div>
 
         {recordings.map((rec, index) => (
@@ -174,11 +177,22 @@ function Dashboard() {
                 <div className="outer-shadow" />
 
                 <div className="transcript-card">
-                  <div className="side-label left">full transcript</div>
-
-                  <div className={`transcript-content ${showFullTranscript ? 'expanded' : ''}`}>
+                  <div className="side-label left">Full Transcript</div>
+                  <div className={`transcript-content ${showFullTranscript ? 'expanded' : 'collapsed'}`}>
                     <p>{rec.transcript}</p>
                   </div>
+
+                  <div className="side-label right">Full Transcript</div>
+
+                  {rec.translation && (
+                    <>
+                      <div className="side-label left">Translation</div>
+                      <div className="transcript-content">
+                        <p>{rec.translation}</p>
+                      </div>
+                      <div className="side-label right">Translation</div>
+                    </>
+                  )}
 
                   <div
                     className="watch-more"
@@ -186,8 +200,6 @@ function Dashboard() {
                   >
                     {showFullTranscript ? 'Show less' : 'Watch more...'}
                   </div>
-
-                  <div className="side-label right">full transcript</div>
                 </div>
               </div>
             )}
