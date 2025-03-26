@@ -28,3 +28,15 @@ async def get_user_meetings(
 ):
 
     return await meetings.list_user_meetings(db_session, current_user.id)
+
+@router.get("/meeting_summary/{meeting_id}")
+async def get_meeting_summary(
+    meeting_id: str,
+    db_session: DBSessionDep,
+    current_user: User = Depends(get_current_user),
+):
+    return await meetings.get_meeting_summary(
+        meeting_id=meeting_id,
+        db_session=db_session,
+        user_id=current_user.id
+        )

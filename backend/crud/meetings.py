@@ -32,3 +32,7 @@ async def list_user_meetings(db_session: AsyncSession, user_id: int) -> list[Mee
 
     # Convert the SQLAlchemy objects to Pydantic models
     return [Meeting.model_validate(meeting) for meeting in meetings]
+
+async def get_meeting_summary(meeting_id: str, db_session: AsyncSession, user_id: int):
+    google_meet_services = GoogleMeetServices(db_session=db_session, user_id=user_id)
+    return await google_meet_services.summarize_meeting(meeting_id=meeting_id)
