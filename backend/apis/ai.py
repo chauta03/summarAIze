@@ -1,15 +1,13 @@
+import os
+from services.ai import transcriptionAgent
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from services.ai import geminiAgent
 from crud import meetings
-from db.db_manager import DBSessionDep
 from schemas.meetings import Meeting
-import os
-import azure.cognitiveservices.speech as speechsdk
-import subprocess
-import uuid
 
 router = APIRouter()
 agent = geminiAgent.GeminiAgent()
+transcription_agent = transcriptionAgent.TranscriptionAgent()
 
 @router.get("/summary/{meeting_id}")
 async def get_meeting_summary(meeting_id: str):
@@ -27,49 +25,17 @@ async def get_meeting_summary(meeting_id: str):
     summary = agent.generateSumary(sample_script)
     return {"meeting_id": meeting_id, "summary": summary}
 
-def extract_audio(video_path: str) -> str:
-    """Extracts audio from video and saves it as a .wav file."""
-    audio_path = f"/tmp/{uuid.uuid4()}.wav"  # Generate a unique filename
 
-    command = ["ffmpeg", "-i", video_path, "-q:a", "0", "-map", "a", audio_path, "-y"]
-    try:
-        subprocess.run(command, check=True)
-        return audio_path
-    except subprocess.CalledProcessError:
-        raise HTTPException(status_code=500, detail="Failed to extract audio from video")
-
-def transcribe_audio(audio_path: str) -> str:
-    """Transcribes speech from an audio file using Azure Speech-to-Text."""
-    speech_config = speechsdk.SpeechConfig(subscription=os.getenv("AZURE_SPEECH_KEY"), region=os.getenv("AZURE_REGION"))
-    audio_config = speechsdk.AudioConfig(filename=audio_path)
-
-    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
-    result = recognizer.recognize_once()
-
-    if result.reason == speechsdk.ResultReason.RecognizedSpeech:
-        return result.text
-    elif result.reason == speechsdk.ResultReason.NoMatch:
-        return "No speech could be recognized"
-    elif result.reason == speechsdk.ResultReason.Canceled:
-        return f"Speech recognition canceled: {result.cancellation_details.reason}"
-
-@router.post("/transcribe_video")
-async def transcribe_video(file: UploadFile = File(...)):
+@router.post("/transcription")
+async def get_transcription(file: UploadFile = File(...)):
     """Accepts a video file, extracts audio, transcribes it, and returns the transcription."""
-    video_path = f"/tmp/{file.filename}"
+    azure_key = os.getenv("AZURE_SPEECH_KEY")
+    azure_region = os.getenv("AZURE_REGION")
+
+    if not azure_key or not azure_region:
+        raise HTTPException(status_code=500, detail="Azure credentials not set in environment variables")
     
-    # Save uploaded file
-    with open(video_path, "wb") as buffer:
-        buffer.write(await file.read())
-
-    # Extract audio
-    audio_path = extract_audio(video_path)
-
-    # Transcribe audio
-    transcription = transcribe_audio(audio_path)
-
-    # Clean up files
-    os.remove(video_path)
-    os.remove(audio_path)
+    transcription = await transcription_agent.transcribe_video(file)
 
     return {"transcription": transcription}
+
