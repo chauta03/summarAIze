@@ -4,7 +4,7 @@ const fakeRecordings = [
       id: 1,
       title: 'Azure Hackathon Meeting',
       dateUploaded: 'Sun, 2nd March 2025',
-      duration: '20:12 min',
+      duration: '2000',
       keyPoints: {
         frontend: 'ReactJS',
         backend: '......'
@@ -25,7 +25,7 @@ Line 8: Wow, it's long!`
       id: 2,
       title: 'Tech Sync Meeting',
       dateUploaded: 'Fri, 28th February 2025',
-      duration: '15:05 min',
+      duration: '150',
       keyPoints: {
         frontend: 'VueJS',
         backend: 'Node.js'

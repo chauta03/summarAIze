@@ -36,7 +36,7 @@ function Dashboard() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:8000/ai/upload', {
+      const response = await fetch('http://localhost:8000/ai/transcription-and-summary', {
         method: 'POST',
         body: formData,
       });
@@ -48,7 +48,7 @@ function Dashboard() {
       const data = await response.json();
 
       setPendingRecordingData({
-        transcript: data.transcript,
+        transcription: data.transcription,
         summary: data.summary,
         duration: data.duration,
       });
@@ -163,7 +163,9 @@ function Dashboard() {
             <div className="recording-index">{index + 1}.</div>
             <div className="recording-title">{rec.title}</div>
             <div className="recording-date">{rec.dateUploaded}</div>
-            <div className="recording-duration">{rec.duration}</div>
+            <div className="recording-duration">
+              {Math.floor(rec.duration / 60)}:{(rec.duration % 60).toString().padStart(2, '0')}
+            </div>
             <div className="summarized-key">{rec.summary || rec.transcript}</div>
             <button onClick={() => toggleExpand(rec.id)} className="view-transcript-btn">
               view full transcript
