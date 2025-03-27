@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, File, UploadFile
 from crud import meetings
 from db.db_manager import DBSessionDep
 from schemas.meetings import Meeting
 from apis.sessions import get_current_user
 from db.models import User
+from services.meetings.azure_blob_storage import StorageService
 
 router = APIRouter()
 
@@ -40,3 +41,27 @@ async def get_meeting_summary(
         db_session=db_session,
         user_id=current_user.id
         )
+
+@router.post("/upload_video")
+async def upload_video(file: UploadFile = File(...)):
+    """Upload a video file to Azure Blob Storage."""
+    storage_service = StorageService()
+    return storage_service.upload_video(file)
+
+@router.get("/list_videos")
+async def list_videos():
+    """List all videos in Azure Blob Storage."""
+    storage_service = StorageService()
+    return storage_service.list_videos()
+
+@router.delete("/delete_video/{filename}")
+async def delete_video(filename: str):
+    """Delete a video file from Azure Blob Storage."""
+    storage_service = StorageService()
+    return storage_service.delete_video(filename)
+
+@router.get("/get_video/{filename}")
+async def get_video(filename: str):
+    """Get a video file from Azure Blob Storage."""
+    storage_service = StorageService()
+    return storage_service.get_video(filename)
