@@ -9,3 +9,6 @@ class Meeting(BaseModel):
     type: str
     meeting_id: str
     meeting_url: str
+    transcription: str | None = None
+    summary: str | None = None
+    created_at: str 

@@ -14,7 +14,7 @@ async def create_google_meeting(db_session: AsyncSession, user_id: int) -> Meeti
     
     # Extract meeting details
     meeting_id = meeting_info["meeting_id"]
-    meeting_url = meeting_info["meeting_uri"]
+    meeting_url = meeting_info["meeting_url"]
     
     # Create a new Meeting database object
     meeting = MeetingDBModel(user_id=user_id, type="google", meeting_id=meeting_id, meeting_url=meeting_url)
