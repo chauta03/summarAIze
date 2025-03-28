@@ -7,8 +7,9 @@ class Meeting(BaseModel):
     id: int
     user_id: int
     type: str
-    meeting_id: str
+    meeting_id: str | None = None
     meeting_url: str
     transcription: str | None = None
     summary: str | None = None
-    created_at: str 
+    duration: str | None = None
+    created_at: str | None = None

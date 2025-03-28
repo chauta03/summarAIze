@@ -66,34 +66,41 @@ class TranscriptionAgent:
             return f"Speech recognition canceled: {result.cancellation_details.reason}"
         
 
-    async def transcribe_video(self, file: UploadFile = None, video_path: str = None) -> str:
+    async def transcribe_video(self, file: UploadFile = None, video_path: str = None):
         """
         Accepts a video file or a video URI, extracts audio, transcribes it, and returns the transcription.
         """
         if not file and not video_path:
             raise HTTPException(status_code=400, detail="Either a file or a video URI must be provided.")
 
-        # Determine the video source
-        if file:
-            # Save the uploaded file
-            video_path = f"/tmp/{uuid.uuid4()}_{file.filename}"
-            with open(video_path, "wb") as buffer:
-                buffer.write(await file.read())
-
+        temp_video_path = None
         try:
+            if file:
+                temp_video_path = f"/tmp/{uuid.uuid4()}_{file.filename}"
+                with open(temp_video_path, "wb") as buffer:
+                    buffer.write(await file.read())
+                video_path = temp_video_path
+            
+            # Verify file integrity before processing
+            if not os.path.exists(video_path) or os.path.getsize(video_path) == 0:
+                raise HTTPException(status_code=400, detail="Uploaded video file is empty or missing.")
+
             # Extract audio
             audio_info = self.extract_audio(video_path)
+            
+            if not os.path.exists(audio_info["path"]) or os.path.getsize(audio_info["path"]) == 0:
+                raise HTTPException(status_code=500, detail="Extracted audio file is empty or corrupted.")
 
             # Transcribe audio
             transcription = self.transcribe_audio(audio_info["path"])
-
+            
             return {
                 "transcription": transcription,
                 "duration": audio_info["duration"]
-                }
+            }
         finally:
             # Clean up files
-            if os.path.exists(video_path):
-                os.remove(video_path)
-            if os.path.exists(audio_info["path"]):
+            if temp_video_path and os.path.exists(temp_video_path):
+                os.remove(temp_video_path)
+            if "audio_info" in locals() and os.path.exists(audio_info["path"]):
                 os.remove(audio_info["path"])

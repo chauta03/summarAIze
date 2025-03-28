@@ -9,6 +9,7 @@ router = APIRouter()
 agent = geminiAgent.GeminiAgent()
 transcription_agent = transcriptionAgent.TranscriptionAgent()
 
+
 @router.get("/summary/{meeting_id}")
 async def get_meeting_summary(meeting_id: str):
     sample_script = """
@@ -34,8 +35,8 @@ async def get_transcription_and_summary(file: UploadFile = File(...)):
 
     if not azure_key or not azure_region:
         raise HTTPException(status_code=500, detail="Azure credentials not set in environment variables")
-    
+
     transcription_info = await transcription_agent.transcribe_video(file)
-    transcription_info["summary"] = agent.generateSumary(transcription_info["transcription"])
+    transcription_info["summary"] = agent.generateSummary(transcription_info["transcription"])
     return transcription_info
 

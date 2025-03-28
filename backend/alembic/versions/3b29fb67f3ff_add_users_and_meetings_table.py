@@ -35,11 +35,12 @@ def upgrade() -> None:
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('user_id', sa.Integer, sa.ForeignKey('users.id', ondelete='CASCADE'), nullable=False),
         sa.Column('type', sa.String(length=100), nullable=False),
-        sa.Column('meeting_id', sa.String(length=150), nullable=False),
+        sa.Column('meeting_id', sa.String(length=150), nullable=True),
         sa.Column('meeting_url', sa.String(length=250), nullable=False),
         sa.Column('transcription', sa.String(length=500), nullable=True),
         sa.Column('summary', sa.String(length=500), nullable=True),
-        sa.Column('created_at', sa.DateTime, nullable=False)
+        sa.Column('duration', sa.String(length=50), nullable=True),
+        sa.Column('created_at', sa.DateTime, nullable=True)
     )
 
 def downgrade() -> None:

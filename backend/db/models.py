@@ -24,11 +24,12 @@ class Meeting(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     type = Column(String(100), nullable=False)
-    meeting_id = Column(String(150), nullable=False)
+    meeting_id = Column(String(150), nullable=True)
     meeting_url = Column(String(250), nullable=False)
     transcription = Column(String(500), nullable=True)
     summary = Column(String(500), nullable=True)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=True)
+    duration = Column(String(50), nullable=True)
 
     user = relationship("User", back_populates="meetings")
 

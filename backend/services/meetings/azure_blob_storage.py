@@ -8,15 +8,17 @@ class StorageService:
     def __init__(self):
         self.blob_service_client = BlobServiceClient.from_connection_string(os.getenv("AZURE_STORAGE_CONNECTION_STRING"))
 
-    def upload_video(self, file: UploadFile = File(...)):
+    async def upload_video(self, file: UploadFile = File(...), file_content: bytes = None):
         try:
+
             blob_client = self.blob_service_client.get_blob_client(container=os.getenv("CONTAINER_NAME"), blob=file.filename)
 
-            # Upload file to Azure Blob Storage
-            with file.file as f:
-                blob_client.upload_blob(f, overwrite=True)
+            # Upload the file content to Azure Blob Storage
+            blob_client.upload_blob(file_content, overwrite=True)
 
-            return {"message": "Video uploaded successfully", "video_url": blob_client.url}
+            # Get creation time of the uploaded blob
+            creation_time = blob_client.get_blob_properties().creation_time
+            return {"message": "Video uploaded successfully", "video_url": blob_client.url, "created_at": creation_time}
 
         except Exception as e:
             return {"error": str(e)}
