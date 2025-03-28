@@ -26,6 +26,10 @@ def upgrade() -> None:
 
     # Add record_url column
     op.add_column('meetings', sa.Column('record_url', sa.String(length=250), nullable=True))
+    op.add_column('meetings', sa.Column('transcription', sa.String(length=500), nullable=True))
+    op.add_column('meetings', sa.Column('summary', sa.String(length=500), nullable=True))
+    op.add_column('meetings', sa.Column('duration', sa.Integer, nullable=True))
+    
 
 
 def downgrade() -> None:

@@ -29,8 +29,7 @@ class Meeting(Base):
     meeting_url = Column(String(250), nullable=False)
     transcription = Column(String(500), nullable=True)
     summary = Column(String(500), nullable=True)
-    created_at = Column(DateTime, nullable=True)
-    duration = Column(String(50), nullable=True)
+    duration = Column(Integer, nullable=True)
 
     user = relationship("User", back_populates="meetings")
 

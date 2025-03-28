@@ -12,5 +12,4 @@ class Meeting(BaseModel):
     record_url: str | None = None
     transcription: str | None = None
     summary: str | None = None
-    duration: str | None = None
-    created_at: str | None = None
+    duration: int | None = None
