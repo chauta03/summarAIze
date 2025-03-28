@@ -8,7 +8,7 @@ function App() {
   const logos = [ggMeet, microsoftTeams, zoom];
 
   return (
-    <div className="LiveTranscription">
+    <div className="LiveTranscription" id="transcription">
       <header className="LiveTranscription-header">
         <h1>live transcription</h1>
         <h2>connect with</h2>

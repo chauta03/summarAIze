@@ -7,6 +7,7 @@
   background-color: var(--primary-color);
   --primary-color: #232323;
   --red: #B43535;
+  font-size: 16px; 
 }
 
 .earth-wrapper {
@@ -43,4 +44,8 @@
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }

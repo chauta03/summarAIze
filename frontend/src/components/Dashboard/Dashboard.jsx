@@ -36,7 +36,7 @@ function Dashboard() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('http://localhost:8000/ai/transcription-and-summary', {
+      const response = await fetch('http://localhost:8000/meetings/upload_meeting_recording', {
         method: 'POST',
         body: formData,
       });
@@ -106,7 +106,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" id="dashboard">
       <div className="upload-column">
         <input
           type="file"

@@ -219,7 +219,7 @@ class GoogleMeetServices:
             print("=====")
             print("transcript: ", record_transcription)
             # Generate the summary
-            record_transcription["summary"] = summaryAgent.generateSumary(record_transcription["transcription"])
+            record_transcription["summary"] = summaryAgent.generateSummary(record_transcription["transcription"])
 
             return record_transcription
         finally:
