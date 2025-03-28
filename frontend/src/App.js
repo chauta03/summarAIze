@@ -3,11 +3,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './components/LoginPage';
 import Signup from './components/SignUpPage';
 import './App.css';
-import LiveTranscription from './pages/LiveTransciption';
+import LiveTranscription from './components/LiveTransciption';
 import NavBar from './components/NavBar/NavBar';
 import Dashboard from './components/Dashboard/Dashboard';
 import BlenderModelViewer from './components/Blender/BlenderModelViewer';
 import Stars from './components/Stars/Stars';
+import Profile from './components/Profile';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,6 +26,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/live-transcription" element={<LiveTranscription />} />
 
+
           {/* If logged in, render the live transcription page, otherwise, redirect to login */}
           <Route
             path="/main-dashboard"
@@ -35,6 +37,7 @@ function App() {
                   <Stars />
                   <BlenderModelViewer />
                 </div>
+                <Profile />
                 <Dashboard />
                 <LiveTranscription />
               </div>
