@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
 import googleLogo from '../assets/google-logo.png';
-import { Link, useNavigate } from 'react-router-dom';  // Import useNavigate
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 import LoginImg from '../assets/LogIn.png';
-import axios from 'axios'; // Don't forget to import axios for making API calls
+import axios from 'axios'; // Import axios for making API calls
 
 const Login = ({ onLogin }) => {
-  const navigate = useNavigate();  // Initialize navigate function
+  const navigate = useNavigate(); // Initialize navigate function
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -29,32 +29,30 @@ const Login = ({ onLogin }) => {
       const response = await axios.post('http://127.0.0.1:8000/users/sign_in', {
         email,
         password,
-      });
-
-      // Save the JWT token from the response to localStorage
-      localStorage.setItem('token', response.data.token);
+      }, { withCredentials: true }); // Include credentials (cookies) in the request
 
       // Call onLogin to update the isLoggedIn state in the parent component
-      onLogin();  // Update isLoggedIn after login is successful
+      onLogin(); // Update isLoggedIn after login is successful
 
       // After login, navigate to the main dashboard or live transcription page
-      navigate('/main-dashboard');  // Redirect to the live-transcription page or dashboard
+      navigate('/main-dashboard'); // Redirect to the live-transcription page or dashboard
     } catch (error) {
       // Handle errors, e.g., invalid credentials
-      setError(error.response?.data?.message || 'Login failed');
+      setError(error.response?.data?.detail || 'Login failed');
     }
   };
 
   return (
     <div className="login-page" style={backgroundStyle}>
+      <div className="login-hi"></div>
       <div className="login-box">
         <h2 className="login-title">log in</h2>
-        
+
         {/* Google login button */}
         <button className="google-button">
           <img src={googleLogo} alt="Google logo" className="google-icon" />
         </button>
-        
+
         <span className="divider">or use your account</span>
 
         {/* Login form */}
@@ -64,8 +62,8 @@ const Login = ({ onLogin }) => {
               id="email"
               type="email"
               placeholder="email"
-              value={email}  // Bind the email input to state
-              onChange={(e) => setEmail(e.target.value)}  // Update state on change
+              value={email} // Bind the email input to state
+              onChange={(e) => setEmail(e.target.value)} // Update state on change
               required
             />
           </div>
@@ -75,8 +73,8 @@ const Login = ({ onLogin }) => {
               id="password"
               type="password"
               placeholder="password"
-              value={password}  // Bind the password input to state
-              onChange={(e) => setPassword(e.target.value)}  // Update state on change
+              value={password} // Bind the password input to state
+              onChange={(e) => setPassword(e.target.value)} // Update state on change
               required
             />
           </div>
