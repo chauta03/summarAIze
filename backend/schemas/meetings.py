@@ -9,3 +9,4 @@ class Meeting(BaseModel):
     type: str
     meeting_id: str
     meeting_url: str
+    record_url: str

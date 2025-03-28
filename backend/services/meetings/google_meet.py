@@ -185,8 +185,6 @@ class GoogleMeetServices:
 
             # Get the file metadata
             file_metadata = drive_service.files().get(fileId=file_id).execute()
-            print("+++++++++File Data+++++++")
-            print(file_metadata)
             file_name = file_metadata['name']
 
             # Download the file content

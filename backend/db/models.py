@@ -24,8 +24,9 @@ class Meeting(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     type = Column(String(100), nullable=False)
-    meeting_id = Column(String(150), nullable=False)
-    meeting_url = Column(String(250), nullable=False)
+    meeting_id = Column(String(150), nullable=True)
+    meeting_url = Column(String(250), nullable=True)
+    record_url = Column(String(250), nullable=True)
 
     user = relationship("User", back_populates="meetings")
 

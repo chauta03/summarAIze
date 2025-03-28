@@ -1,5 +1,5 @@
+from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict
-
 
 class UserCreate(BaseModel):
     """
@@ -17,8 +17,16 @@ class UserLogin(BaseModel):
     """
     email: EmailStr
     password: str
-
-
+    
+class UserUpdate(BaseModel):
+    """
+    Schema for user update.
+    """
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    password: Optional[str] = None
+    password: str
+    
 class UserResponse(BaseModel):
     """
     Schema for user response (excluding sensitive fields like password).

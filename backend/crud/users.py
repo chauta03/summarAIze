@@ -3,7 +3,7 @@ from sqlalchemy.future import select
 from fastapi import HTTPException, Response
 from passlib.context import CryptContext
 from db.models import User
-from schemas.users import UserResponse
+from schemas.users import UserResponse, UserUpdate
 
 # Password hashing utility
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -52,3 +52,29 @@ async def logout(response: Response):
     # Delete the user_id cookie to log the user out
     response.delete_cookie(key="user_id")
     return {"message": "User logged out successfully"}
+
+async def update_user(db_session: AsyncSession, user_id: int, update_data: UserUpdate) -> UserResponse:
+    # Fetch the user from the database
+    result = await db_session.execute(select(User).where(User.id == user_id))
+    user = result.scalars().first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Update the user's fields using the UserUpdate model
+    update_dict = update_data.model_dump(exclude_unset=True)  # Only update fields that are provided
+    for key, value in update_dict.items():
+        if hasattr(user, key) and key != "password":  # Exclude password updates here
+            setattr(user, key, value)
+
+    # If password is being updated, hash it
+    if "password" in update_dict:
+        user.password = pwd_context.hash(update_dict["password"])
+
+    # Commit the changes
+    db_session.add(user)
+    await db_session.commit()
+    await db_session.refresh(user)
+
+    # Return the updated user details
+    return UserResponse.model_validate(user)
